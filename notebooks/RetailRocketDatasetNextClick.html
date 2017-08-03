@@ -1,9 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>Retail Rocket - Ecommerce dataset</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>Retail Rocket - Ecommerce dataset: Next click prediction</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
+  ga('create', 'UA-104095210-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
 <style type="text/css">
     /*!
 *
@@ -11773,45 +11782,60 @@ div#notebook {
   <div tabindex="-1" id="notebook" class="border-box-sizing">
     <div class="container" id="notebook-container">
 
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Simple-recommenders-in-Scala-for-Retail-Rocket-dataset">Simple recommenders in Scala for Retail Rocket dataset<a class="anchor-link" href="#Simple-recommenders-in-Scala-for-Retail-Rocket-dataset">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We've published our dataset for research purposes recently here: <a href="https://www.kaggle.com/retailrocket/ecommerce-dataset">https://www.kaggle.com/retailrocket/ecommerce-dataset</a> Views, downloads and upvotes are good but there hasn't published any kernels yet. So I decided to write some posts about using such type of data for creating simple recommender systems. Scala is heavily used in Retailrocket. This notebook is aimed to show how to create simple recommenders in Scala. I created a simple recommender to predict the next click on item.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The first step: Let's define path to file with click data and case class for a convinient way of reading data.</p>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-scala"><pre><span></span><span class="k">import</span> <span class="nn">scala.io.Source</span>
 
 <span class="k">val</span> <span class="n">eventsPath</span> <span class="k">=</span> <span class="s">&quot;./events.csv&quot;</span>
-<span class="k">case</span> <span class="k">class</span> <span class="nc">Event</span><span class="o">(</span><span class="n">timeStamp</span><span class="k">:</span> <span class="kt">Long</span><span class="o">,</span> <span class="n">visitorId</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">event</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">itemId</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">orderId</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Int</span><span class="o">])</span>
-<span class="k">case</span> <span class="k">class</span> <span class="nc">Rec</span><span class="o">(</span><span class="n">itemIdRight</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">weight</span><span class="k">:</span> <span class="kt">Float</span><span class="o">)</span>
+<span class="k">case</span> <span class="k">class</span> <span class="nc">Event</span><span class="o">(</span><span class="n">timeStamp</span><span class="k">:</span> <span class="kt">Long</span><span class="o">,</span> <span class="n">visitorId</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">event</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">itemId</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">orderId</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Int</span><span class="o">])</span> <span class="c1">// to store Events</span>
 </pre></div>
 
 </div>
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt output_prompt">Out[1]:</div>
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre><span class="ansi-green-fg">import </span><span class="ansi-cyan-fg">scala.io.Source
-
-</span>
-<span class="ansi-cyan-fg">eventsPath</span>: <span class="ansi-green-fg">String</span> = <span class="ansi-green-fg">&#34;./events.csv&#34;</span>
-defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">Event</span>
-defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">Rec</span></pre>
 </div>
-
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
 </div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>It's time to read and parse data.</p>
 
 </div>
 </div>
-
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
@@ -11821,8 +11845,8 @@ defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">Rec<
 <div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="n">events</span> <span class="k">=</span> <span class="nc">Source</span><span class="o">.</span><span class="n">fromFile</span><span class="o">(</span><span class="n">eventsPath</span><span class="o">)</span>
     <span class="o">.</span><span class="n">getLines</span>
     <span class="o">.</span><span class="n">toSeq</span>
-    <span class="o">.</span><span class="n">tail</span>
-    <span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">split</span><span class="o">(</span><span class="s">&quot;,&quot;</span><span class="o">,</span> <span class="o">-</span><span class="mi">1</span><span class="o">))</span>
+    <span class="o">.</span><span class="n">tail</span> <span class="c1">// skip first line with columns&#39; names</span>
+    <span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">split</span><span class="o">(</span><span class="s">&quot;,&quot;</span><span class="o">,</span> <span class="o">-</span><span class="mi">1</span><span class="o">))</span> 
     <span class="o">.</span><span class="n">map</span><span class="o">{</span> <span class="k">case</span> <span class="nc">Array</span><span class="o">(</span><span class="n">timeStamp</span><span class="o">,</span> <span class="n">visitorId</span><span class="o">,</span> <span class="n">event</span><span class="o">,</span> <span class="n">itemId</span><span class="o">,</span> <span class="n">orderId</span><span class="o">)</span> <span class="k">=&gt;</span> 
         <span class="nc">Event</span><span class="o">(</span><span class="n">timeStamp</span><span class="o">.</span><span class="n">toLong</span><span class="o">,</span> <span class="n">visitorId</span><span class="o">.</span><span class="n">toInt</span><span class="o">,</span> <span class="n">event</span><span class="o">,</span> <span class="n">itemId</span><span class="o">.</span><span class="n">toInt</span><span class="o">,</span> <span class="k">if</span><span class="o">(</span><span class="n">orderId</span> <span class="o">==</span> <span class="s">&quot;&quot;</span><span class="o">)</span> <span class="nc">None</span> <span class="k">else</span> <span class="nc">Some</span><span class="o">(</span><span class="n">orderId</span><span class="o">.</span><span class="n">toInt</span><span class="o">))}</span>
 </pre></div>
@@ -11867,38 +11891,35 @@ defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">Rec<
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>TO DO:</p>
-<ul>
-<li><s>sessionize</s></li>
-<li><s>generate view after view recs</s></li>
-<li><s>create simple evaluator for recall</s></li>
-<li>train / test dataset</li>
-<li>implement SVM ranker</li>
-</ul>
+<p>A visitor's interest may vary over time. Let's break all log data into sessions for all users.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[48]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span></span><span class="k">def</span> <span class="n">sessionize</span><span class="o">(</span><span class="n">events</span><span class="k">:</span> <span class="kt">Seq</span><span class="o">[</span><span class="kt">Event</span><span class="o">],</span> <span class="n">delay</span><span class="k">:</span> <span class="kt">Long</span><span class="o">,</span> <span class="n">sessionMaxSize</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">100</span><span class="o">)</span><span class="k">:</span> <span class="kt">Seq</span><span class="o">[(</span><span class="kt">Int</span>, <span class="kt">Seq</span><span class="o">[</span><span class="kt">Seq</span><span class="o">[</span><span class="kt">Event</span><span class="o">]])]</span> <span class="k">=</span> 
-    <span class="n">events</span><span class="o">.</span><span class="n">groupBy</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">visitorId</span><span class="o">)</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">def</span> <span class="n">sessionize</span><span class="o">(</span><span class="n">events</span><span class="k">:</span> <span class="kt">Seq</span><span class="o">[</span><span class="kt">Event</span><span class="o">],</span> <span class="n">delay</span><span class="k">:</span> <span class="kt">Long</span><span class="o">,</span> <span class="n">sessionMaxSize</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">1000</span><span class="o">)</span><span class="k">:</span> <span class="kt">Seq</span><span class="o">[(</span><span class="kt">Int</span>, <span class="kt">Seq</span><span class="o">[</span><span class="kt">Seq</span><span class="o">[</span><span class="kt">Event</span><span class="o">]])]</span> <span class="k">=</span> 
+    <span class="n">events</span><span class="o">.</span><span class="n">groupBy</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">visitorId</span><span class="o">)</span> 
+    <span class="c1">// delete  visitors with single clicks </span>
     <span class="o">.</span><span class="n">filter</span><span class="o">{</span> <span class="k">case</span><span class="o">(</span><span class="n">visitorId</span><span class="o">,</span> <span class="n">visitorEvents</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">visitorEvents</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="n">visitorEvents</span><span class="o">.</span><span class="n">size</span> <span class="o">&lt;</span> <span class="n">sessionMaxSize</span><span class="o">}</span>
     <span class="o">.</span><span class="n">flatMap</span><span class="o">{</span> <span class="k">case</span> <span class="o">(</span><span class="n">visitorId</span><span class="o">,</span> <span class="n">visitorEvents</span><span class="o">)</span> <span class="k">=&gt;</span> 
         <span class="k">val</span> <span class="n">sessions</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Seq</span><span class="o">[</span><span class="kt">Seq</span><span class="o">[</span><span class="kt">Event</span><span class="o">]]]</span> <span class="k">=</span> <span class="n">visitorEvents</span>
         <span class="o">.</span><span class="n">sortBy</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">timeStamp</span><span class="o">)</span>
-        <span class="o">.</span><span class="n">sliding</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>
+        <span class="o">.</span><span class="n">sliding</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span> <span class="c1">//make pairs of sorted clicks</span>
         <span class="o">.</span><span class="n">filterNot</span><span class="o">{</span> <span class="k">case</span> <span class="nc">Seq</span><span class="o">(</span><span class="n">a</span><span class="o">,</span><span class="n">b</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">a</span><span class="o">.</span><span class="n">event</span> <span class="o">==</span> <span class="n">b</span><span class="o">.</span><span class="n">event</span> <span class="o">&amp;&amp;</span> <span class="n">a</span><span class="o">.</span><span class="n">itemId</span> <span class="o">==</span> <span class="n">b</span><span class="o">.</span><span class="n">itemId</span><span class="o">}</span>
-        <span class="o">.</span><span class="n">filter</span><span class="o">{</span> <span class="k">case</span> <span class="nc">Seq</span><span class="o">(</span><span class="n">a</span><span class="o">,</span><span class="n">b</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">b</span><span class="o">.</span><span class="n">timeStamp</span> <span class="o">-</span> <span class="n">a</span><span class="o">.</span><span class="n">timeStamp</span> <span class="o">&lt;</span> <span class="n">delay</span><span class="o">}</span>
+        <span class="o">.</span><span class="n">filter</span><span class="o">{</span> <span class="k">case</span> <span class="nc">Seq</span><span class="o">(</span><span class="n">a</span><span class="o">,</span><span class="n">b</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">b</span><span class="o">.</span><span class="n">timeStamp</span> <span class="o">-</span> <span class="n">a</span><span class="o">.</span><span class="n">timeStamp</span> <span class="o">&lt;</span> <span class="n">delay</span><span class="o">}</span> <span class="c1">// delay - is maximum amount of inactivity between clicks </span>
         <span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="nc">Seq</span><span class="o">(</span><span class="k">_</span><span class="o">))</span>
-        <span class="o">.</span><span class="n">reduceOption</span><span class="o">{</span> <span class="o">(</span><span class="n">left</span><span class="o">,</span> <span class="n">right</span><span class="o">)</span> <span class="k">=&gt;</span> 
+        <span class="o">.</span><span class="n">reduceOption</span><span class="o">{</span> <span class="o">(</span><span class="n">left</span><span class="o">,</span> <span class="n">right</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="c1">// merge adjacent clicks into sessions</span>
             <span class="k">if</span> <span class="o">(</span><span class="n">left</span><span class="o">.</span><span class="n">last</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="o">==</span> <span class="n">right</span><span class="o">.</span><span class="n">head</span><span class="o">(</span><span class="mi">0</span><span class="o">))</span> <span class="n">left</span><span class="o">.</span><span class="n">init</span> <span class="o">:+</span> <span class="o">(</span><span class="n">left</span><span class="o">.</span><span class="n">last</span> <span class="o">:+</span> <span class="n">right</span><span class="o">.</span><span class="n">head</span><span class="o">(</span><span class="mi">1</span><span class="o">))</span>
             <span class="k">else</span> <span class="n">left</span> <span class="o">:+</span> <span class="n">right</span><span class="o">.</span><span class="n">head</span> <span class="o">}</span>
-       <span class="n">sessions</span><span class="o">.</span><span class="n">map</span><span class="o">{</span> <span class="n">s</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">visitorId</span><span class="o">,</span> <span class="n">s</span><span class="o">)</span> <span class="o">}}</span>
+        <span class="o">.</span><span class="n">filter</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">size</span> <span class="o">&lt;</span> <span class="n">sessionMaxSize</span><span class="o">)</span> <span class="c1">//filter extreme session with high number of clicks</span>
+       <span class="n">sessions</span><span class="o">.</span><span class="n">map</span><span class="o">{</span> <span class="n">s</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">visitorId</span><span class="o">,</span> <span class="n">s</span><span class="o">)</span> <span class="o">}}</span> <span class="c1">// generate sessions for each visitorId</span>
     <span class="o">.</span><span class="n">toSeq</span>
+
+<span class="k">val</span> <span class="n">sessionizedEvents</span> <span class="k">=</span> <span class="n">sessionize</span><span class="o">(</span><span class="n">events</span><span class="o">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="mi">3600</span> <span class="o">*</span> <span class="mi">1000</span><span class="o">)</span> <span class="c1">// our delay of inactivity is 2 hours</span>
 </pre></div>
 
 </div>
@@ -11910,43 +11931,13 @@ defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">Rec<
 
 
 <div class="output_area">
-<div class="prompt output_prompt">Out[3]:</div>
+<div class="prompt output_prompt">Out[48]:</div>
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>defined <span class="ansi-green-fg">function</span> <span class="ansi-cyan-fg">sessionize</span></pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="n">sessionizedEvents</span> <span class="k">=</span> <span class="n">sessionize</span><span class="o">(</span><span class="n">events</span><span class="o">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="mi">3600</span> <span class="o">*</span> <span class="mi">1000</span><span class="o">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt output_prompt">Out[4]:</div>
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre><span class="ansi-cyan-fg">sessionizedEvents</span>: <span class="ansi-green-fg">Seq</span>[(<span class="ansi-green-fg">Int</span>, <span class="ansi-green-fg">Seq</span>[<span class="ansi-green-fg">Seq</span>[<span class="ansi-green-fg">Event</span>]])] = <span class="ansi-yellow-fg">ArrayBuffer</span>(
+<pre>defined <span class="ansi-green-fg">function</span> <span class="ansi-cyan-fg">sessionize</span>
+<span class="ansi-cyan-fg">sessionizedEvents</span>: <span class="ansi-green-fg">Seq</span>[(<span class="ansi-green-fg">Int</span>, <span class="ansi-green-fg">Seq</span>[<span class="ansi-green-fg">Seq</span>[<span class="ansi-green-fg">Event</span>]])] = <span class="ansi-yellow-fg">ArrayBuffer</span>(
   (
     <span class="ansi-green-fg">1253013</span>,
     <span class="ansi-yellow-fg">List</span>(
@@ -11967,12 +11958,222 @@ defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">Rec<
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Before splitting sessions into train and test, we will examine some statistics about last digit of visitorIds.</p>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="prompt input_prompt">In&nbsp;[49]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span></span><span class="k">def</span> <span class="n">itemToItem</span><span class="o">(</span><span class="n">sessions</span><span class="k">:</span> <span class="kt">Seq</span><span class="o">[</span><span class="kt">Seq</span><span class="o">[</span><span class="kt">Event</span><span class="o">]],</span> <span class="n">leftEvent</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">rightEvent</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> 
+<div class=" highlight hl-scala"><pre><span></span><span class="n">sessionizedEvents</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">_1</span> <span class="o">%</span> <span class="mi">10</span><span class="o">)</span>
+ <span class="o">.</span><span class="n">groupBy</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="n">x</span><span class="o">)</span>
+ <span class="o">.</span><span class="n">map</span><span class="o">{</span> <span class="k">case</span><span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="n">values</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="n">values</span><span class="o">.</span><span class="n">size</span><span class="o">)</span>  <span class="o">}</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[49]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre><span class="ansi-cyan-fg">res48</span>: <span class="ansi-green-fg">Map</span>[<span class="ansi-green-fg">Int</span>, <span class="ansi-green-fg">Int</span>] = <span class="ansi-yellow-fg">Map</span>(
+  <span class="ansi-green-fg">0</span> -&gt; <span class="ansi-green-fg">24052</span>,
+  <span class="ansi-green-fg">5</span> -&gt; <span class="ansi-green-fg">23961</span>,
+  <span class="ansi-green-fg">1</span> -&gt; <span class="ansi-green-fg">24017</span>,
+  <span class="ansi-green-fg">6</span> -&gt; <span class="ansi-green-fg">24126</span>,
+  <span class="ansi-green-fg">9</span> -&gt; <span class="ansi-green-fg">24188</span>,
+  <span class="ansi-green-fg">2</span> -&gt; <span class="ansi-green-fg">24324</span>,
+  <span class="ansi-green-fg">7</span> -&gt; <span class="ansi-green-fg">23913</span>,
+  <span class="ansi-green-fg">3</span> -&gt; <span class="ansi-green-fg">24296</span>,
+  <span class="ansi-green-fg">8</span> -&gt; <span class="ansi-green-fg">24548</span>,
+  <span class="ansi-green-fg">4</span> -&gt; <span class="ansi-green-fg">23897</span>
+)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>As you can see, this digit is evenly distributed. We will use this information to split sessions into train/test datasets.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[51]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-scala"><pre><span></span><span class="k">def</span> <span class="n">splitDataSet</span><span class="o">(</span><span class="n">sessionizedEvents</span><span class="k">:</span> <span class="kt">Seq</span><span class="o">[(</span><span class="kt">Int</span>, <span class="kt">Seq</span><span class="o">[</span><span class="kt">Seq</span><span class="o">[</span><span class="kt">Event</span><span class="o">]])],</span> <span class="n">testProportion</span><span class="k">:</span> <span class="kt">Double</span><span class="o">)</span><span class="k">:</span> 
+<span class="o">(</span><span class="kt">Seq</span><span class="o">[(</span><span class="kt">Int</span>, <span class="kt">Seq</span><span class="o">[</span><span class="kt">Seq</span><span class="o">[</span><span class="kt">Event</span><span class="o">]])],</span><span class="nc">Seq</span><span class="o">[(</span><span class="kt">Int</span>, <span class="kt">Seq</span><span class="o">[</span><span class="kt">Seq</span><span class="o">[</span><span class="kt">Event</span><span class="o">]])])</span> <span class="k">=</span> <span class="o">{</span>
+    <span class="n">require</span><span class="o">(</span><span class="n">testProportion</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">testProportion</span> <span class="o">&lt;=</span> <span class="mf">1.0</span><span class="o">,</span> <span class="s">&quot;proportion must be in [0,1]&quot;</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">train</span> <span class="k">=</span> <span class="n">sessionizedEvents</span><span class="o">.</span><span class="n">filter</span><span class="o">{</span> <span class="k">case</span> <span class="o">(</span><span class="n">visitorId</span><span class="o">,</span> <span class="n">visitorSessions</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">visitorId</span> <span class="o">%</span> <span class="mi">100</span> <span class="o">&gt;</span> <span class="o">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">testProportion</span> <span class="o">*</span> <span class="mi">100</span><span class="o">)}</span>
+    <span class="k">val</span> <span class="n">test</span> <span class="k">=</span> <span class="n">sessionizedEvents</span><span class="o">.</span><span class="n">filter</span><span class="o">{</span> <span class="k">case</span> <span class="o">(</span><span class="n">visitorId</span><span class="o">,</span> <span class="n">visitorSessions</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">visitorId</span> <span class="o">%</span> <span class="mi">100</span> <span class="o">&lt;=</span> <span class="n">testProportion</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">}</span>
+    <span class="o">(</span><span class="n">train</span><span class="o">,</span> <span class="n">test</span><span class="o">)</span>
+<span class="o">}</span> 
+
+<span class="k">val</span> <span class="o">(</span><span class="n">train</span><span class="o">,</span> <span class="n">test</span><span class="o">)</span> <span class="k">=</span> <span class="n">splitDataSet</span><span class="o">(</span><span class="n">sessionizedEvents</span><span class="o">,</span> <span class="mf">0.2</span><span class="o">)</span> <span class="c1">// 20% for test</span>
+<span class="k">val</span> <span class="n">trainSessions</span> <span class="k">=</span> <span class="n">train</span><span class="o">.</span><span class="n">flatMap</span><span class="o">{</span> <span class="k">case</span><span class="o">(</span><span class="n">visitorId</span><span class="o">,</span> <span class="n">visitorSessions</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">visitorSessions</span><span class="o">}</span>
+<span class="k">val</span> <span class="n">testSessions</span> <span class="k">=</span> <span class="n">test</span><span class="o">.</span><span class="n">flatMap</span><span class="o">{</span> <span class="k">case</span><span class="o">(</span><span class="n">visitorId</span><span class="o">,</span> <span class="n">visitorSessions</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">visitorSessions</span><span class="o">}</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>489163
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[51]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>defined <span class="ansi-green-fg">function</span> <span class="ansi-cyan-fg">splitDataSet</span>
+<span class="ansi-cyan-fg">train</span>: <span class="ansi-green-fg">Seq</span>[(<span class="ansi-green-fg">Int</span>, <span class="ansi-green-fg">Seq</span>[<span class="ansi-green-fg">Seq</span>[<span class="ansi-green-fg">Event</span>]])] = <span class="ansi-yellow-fg">ArrayBuffer</span>(
+  (
+    <span class="ansi-green-fg">1253013</span>,
+    <span class="ansi-yellow-fg">List</span>(
+      <span class="ansi-yellow-fg">Stream</span>(
+        <span class="ansi-yellow-fg">Event</span>(<span class="ansi-green-fg">1437856704939L</span>, <span class="ansi-green-fg">1253013</span>, <span class="ansi-green-fg">&#34;view&#34;</span>, <span class="ansi-green-fg">214357</span>, None),
+        <span class="ansi-yellow-fg">Event</span>(<span class="ansi-green-fg">1437856765656L</span>, <span class="ansi-green-fg">1253013</span>, <span class="ansi-green-fg">&#34;view&#34;</span>, <span class="ansi-green-fg">203772</span>, None),
+        <span class="ansi-yellow-fg">Event</span>(<span class="ansi-green-fg">1437857105399L</span>, <span class="ansi-green-fg">1253013</span>, <span class="ansi-green-fg">&#34;view&#34;</span>, <span class="ansi-green-fg">262407</span>, None)
+      ),
+      <span class="ansi-yellow-fg">Stream</span>(
+        <span class="ansi-yellow-fg">Event</span>(<span class="ansi-green-fg">1437857105399L</span>, <span class="ansi-green-fg">1253013</span>, <span class="ansi-green-fg">&#34;view&#34;</span>, <span class="ansi-green-fg">262407</span>, None),
+        <span class="ansi-yellow-fg">Event</span>(<span class="ansi-green-fg">1437857205669L</span>, <span class="ansi-green-fg">1253013</span>, <span class="ansi-green-fg">&#34;view&#34;</span>, <span class="ansi-green-fg">214357</span>, None),
+<span class="ansi-yellow-fg">...</span>
+<span class="ansi-cyan-fg">test</span>: <span class="ansi-green-fg">Seq</span>[(<span class="ansi-green-fg">Int</span>, <span class="ansi-green-fg">Seq</span>[<span class="ansi-green-fg">Seq</span>[<span class="ansi-green-fg">Event</span>]])] = <span class="ansi-yellow-fg">ArrayBuffer</span>(
+  (
+    <span class="ansi-green-fg">1253013</span>,
+    <span class="ansi-yellow-fg">List</span>(
+      <span class="ansi-yellow-fg">Stream</span>(
+        <span class="ansi-yellow-fg">Event</span>(<span class="ansi-green-fg">1437856704939L</span>, <span class="ansi-green-fg">1253013</span>, <span class="ansi-green-fg">&#34;view&#34;</span>, <span class="ansi-green-fg">214357</span>, None),
+        <span class="ansi-yellow-fg">Event</span>(<span class="ansi-green-fg">1437856765656L</span>, <span class="ansi-green-fg">1253013</span>, <span class="ansi-green-fg">&#34;view&#34;</span>, <span class="ansi-green-fg">203772</span>, None),
+        <span class="ansi-yellow-fg">Event</span>(<span class="ansi-green-fg">1437857105399L</span>, <span class="ansi-green-fg">1253013</span>, <span class="ansi-green-fg">&#34;view&#34;</span>, <span class="ansi-green-fg">262407</span>, None)
+      ),
+      <span class="ansi-yellow-fg">Stream</span>(
+        <span class="ansi-yellow-fg">Event</span>(<span class="ansi-green-fg">1437857105399L</span>, <span class="ansi-green-fg">1253013</span>, <span class="ansi-green-fg">&#34;view&#34;</span>, <span class="ansi-green-fg">262407</span>, None),
+        <span class="ansi-yellow-fg">Event</span>(<span class="ansi-green-fg">1437857205669L</span>, <span class="ansi-green-fg">1253013</span>, <span class="ansi-green-fg">&#34;view&#34;</span>, <span class="ansi-green-fg">214357</span>, None),
+<span class="ansi-yellow-fg">...</span>
+<span class="ansi-cyan-fg">trainSessions</span>: <span class="ansi-green-fg">Seq</span>[<span class="ansi-green-fg">Seq</span>[<span class="ansi-green-fg">Event</span>]] = <span class="ansi-yellow-fg">ArrayBuffer</span>(
+  <span class="ansi-yellow-fg">Stream</span>(
+    <span class="ansi-yellow-fg">Event</span>(<span class="ansi-green-fg">1437856704939L</span>, <span class="ansi-green-fg">1253013</span>, <span class="ansi-green-fg">&#34;view&#34;</span>, <span class="ansi-green-fg">214357</span>, None),
+    <span class="ansi-yellow-fg">Event</span>(<span class="ansi-green-fg">1437856765656L</span>, <span class="ansi-green-fg">1253013</span>, <span class="ansi-green-fg">&#34;view&#34;</span>, <span class="ansi-green-fg">203772</span>, None),
+    <span class="ansi-yellow-fg">Event</span>(<span class="ansi-green-fg">1437857105399L</span>, <span class="ansi-green-fg">1253013</span>, <span class="ansi-green-fg">&#34;view&#34;</span>, <span class="ansi-green-fg">262407</span>, None)
+  ),
+  <span class="ansi-yellow-fg">Stream</span>(
+    <span class="ansi-yellow-fg">Event</span>(<span class="ansi-green-fg">1437857105399L</span>, <span class="ansi-green-fg">1253013</span>, <span class="ansi-green-fg">&#34;view&#34;</span>, <span class="ansi-green-fg">262407</span>, None),
+    <span class="ansi-yellow-fg">Event</span>(<span class="ansi-green-fg">1437857205669L</span>, <span class="ansi-green-fg">1253013</span>, <span class="ansi-green-fg">&#34;view&#34;</span>, <span class="ansi-green-fg">214357</span>, None),
+    <span class="ansi-yellow-fg">Event</span>(<span class="ansi-green-fg">1437857253731L</span>, <span class="ansi-green-fg">1253013</span>, <span class="ansi-green-fg">&#34;view&#34;</span>, <span class="ansi-green-fg">203772</span>, None)
+  ),
+  <span class="ansi-yellow-fg">Stream</span>(
+<span class="ansi-yellow-fg">...</span>
+<span class="ansi-cyan-fg">testSessions</span>: <span class="ansi-green-fg">Seq</span>[<span class="ansi-green-fg">Seq</span>[<span class="ansi-green-fg">Event</span>]] = <span class="ansi-yellow-fg">ArrayBuffer</span>(
+  <span class="ansi-yellow-fg">Stream</span>(
+    <span class="ansi-yellow-fg">Event</span>(<span class="ansi-green-fg">1437856704939L</span>, <span class="ansi-green-fg">1253013</span>, <span class="ansi-green-fg">&#34;view&#34;</span>, <span class="ansi-green-fg">214357</span>, None),
+    <span class="ansi-yellow-fg">Event</span>(<span class="ansi-green-fg">1437856765656L</span>, <span class="ansi-green-fg">1253013</span>, <span class="ansi-green-fg">&#34;view&#34;</span>, <span class="ansi-green-fg">203772</span>, None),
+    <span class="ansi-yellow-fg">Event</span>(<span class="ansi-green-fg">1437857105399L</span>, <span class="ansi-green-fg">1253013</span>, <span class="ansi-green-fg">&#34;view&#34;</span>, <span class="ansi-green-fg">262407</span>, None)
+  ),
+  <span class="ansi-yellow-fg">Stream</span>(
+    <span class="ansi-yellow-fg">Event</span>(<span class="ansi-green-fg">1437857105399L</span>, <span class="ansi-green-fg">1253013</span>, <span class="ansi-green-fg">&#34;view&#34;</span>, <span class="ansi-green-fg">262407</span>, None),
+    <span class="ansi-yellow-fg">Event</span>(<span class="ansi-green-fg">1437857205669L</span>, <span class="ansi-green-fg">1253013</span>, <span class="ansi-green-fg">&#34;view&#34;</span>, <span class="ansi-green-fg">214357</span>, None),
+    <span class="ansi-yellow-fg">Event</span>(<span class="ansi-green-fg">1437857253731L</span>, <span class="ansi-green-fg">1253013</span>, <span class="ansi-green-fg">&#34;view&#34;</span>, <span class="ansi-green-fg">203772</span>, None)
+  ),
+  <span class="ansi-yellow-fg">Stream</span>(
+<span class="ansi-yellow-fg">...</span>
+<span class="ansi-cyan-fg">res50_5</span>: <span class="ansi-green-fg">Int</span> = <span class="ansi-green-fg">102563</span></pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[52]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-scala"><pre><span></span><span class="n">println</span><span class="o">(</span><span class="s">&quot;train sessions: &quot;</span> <span class="o">+</span> <span class="n">trainSessions</span><span class="o">.</span><span class="n">size</span><span class="o">)</span>
+<span class="n">println</span><span class="o">(</span><span class="s">&quot;test sessions: &quot;</span> <span class="o">+</span> <span class="n">testSessions</span><span class="o">.</span><span class="n">size</span><span class="o">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>train sessions: 489163
+test sessions: 102563
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now recommendations will be generated from the train data. I use a simple strategy: analyse co-occurrence of items in sessions  with one condition: potential recommended item (itemRight) should be clicked after item (itemLeft), for which we are going to recommend something</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[53]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-scala"><pre><span></span><span class="k">case</span> <span class="k">class</span> <span class="nc">Rec</span><span class="o">(</span><span class="n">itemIdRight</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">weight</span><span class="k">:</span> <span class="kt">Float</span><span class="o">)</span> <span class="c1">// class to store recommendations to particular itemIdLeft</span>
+
+<span class="k">def</span> <span class="n">itemToItem</span><span class="o">(</span><span class="n">sessions</span><span class="k">:</span> <span class="kt">Seq</span><span class="o">[</span><span class="kt">Seq</span><span class="o">[</span><span class="kt">Event</span><span class="o">]],</span> <span class="n">leftEvent</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">rightEvent</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> 
                <span class="n">minCount</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">2</span><span class="o">,</span> <span class="n">minimumRecs</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">3</span><span class="o">)</span><span class="k">:</span> <span class="kt">Map</span><span class="o">[</span><span class="kt">Int</span>,<span class="kt">Seq</span><span class="o">[</span><span class="kt">Rec</span><span class="o">]]</span> <span class="k">=</span> <span class="o">{</span>
     
     <span class="k">val</span> <span class="n">itemToItemCounts</span><span class="k">:</span> <span class="kt">Seq</span><span class="o">[(</span><span class="kt">Int</span>, <span class="kt">Int</span>, <span class="kt">Int</span><span class="o">)]</span> <span class="k">=</span> <span class="n">sessions</span>
@@ -11994,7 +12195,7 @@ defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">Rec<
      <span class="o">.</span><span class="n">map</span><span class="o">{</span> <span class="k">case</span> <span class="o">(</span><span class="n">itemIdLeft</span><span class="o">,</span> <span class="n">rights</span><span class="o">)</span> <span class="k">=&gt;</span> 
          <span class="k">val</span> <span class="n">totalCount</span> <span class="k">=</span> <span class="n">rights</span><span class="o">.</span><span class="n">map</span><span class="o">{</span> <span class="k">case</span><span class="o">(</span><span class="n">itemIdLeft</span><span class="o">,</span> <span class="n">itemIdRight</span><span class="o">,</span> <span class="n">counts</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">counts</span> <span class="o">}.</span><span class="n">sum</span>
          <span class="k">val</span> <span class="n">recs</span> <span class="k">=</span> <span class="n">rights</span><span class="o">.</span><span class="n">map</span><span class="o">{</span> <span class="k">case</span><span class="o">(</span><span class="n">itemIdLeft</span><span class="o">,</span> <span class="n">itemIdRight</span><span class="o">,</span> <span class="n">counts</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nc">Rec</span><span class="o">(</span><span class="n">itemIdRight</span><span class="o">,</span> <span class="n">counts</span><span class="o">.</span><span class="n">toFloat</span> <span class="o">/</span> <span class="n">totalCount</span><span class="o">)}</span>
-          <span class="o">.</span><span class="n">sortBy</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">weight</span><span class="o">)</span> <span class="c1">//for the easiest way to get top recs in the future</span>
+          <span class="o">.</span><span class="n">sortBy</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">weight</span><span class="o">)</span> <span class="c1">//sorting to get top recs easier </span>
           <span class="o">.</span><span class="n">reverse</span> 
          <span class="n">itemIdLeft</span> <span class="o">-&gt;</span> <span class="n">recs</span><span class="o">}</span>
 <span class="o">}</span>
@@ -12009,12 +12210,13 @@ defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">Rec<
 
 
 <div class="output_area">
-<div class="prompt output_prompt">Out[7]:</div>
+<div class="prompt output_prompt">Out[53]:</div>
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>defined <span class="ansi-green-fg">function</span> <span class="ansi-cyan-fg">itemToItem</span></pre>
+<pre>defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">Rec</span>
+defined <span class="ansi-green-fg">function</span> <span class="ansi-cyan-fg">itemToItem</span></pre>
 </div>
 
 </div>
@@ -12025,12 +12227,10 @@ defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">Rec<
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="prompt input_prompt">In&nbsp;[54]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="n">sessions</span><span class="k">:</span> <span class="kt">Seq</span><span class="o">[</span><span class="kt">Seq</span><span class="o">[</span><span class="kt">Event</span><span class="o">]]</span> <span class="k">=</span> <span class="n">sessionizedEvents</span><span class="o">.</span><span class="n">flatMap</span><span class="o">{</span> <span class="k">case</span><span class="o">(</span><span class="n">visitorId</span><span class="o">,</span> <span class="n">sessions</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">sessions</span><span class="o">}</span>
-
-<span class="k">val</span> <span class="n">itemToItemRecs</span> <span class="k">=</span> <span class="n">itemToItem</span><span class="o">(</span><span class="n">sessions</span><span class="o">,</span> <span class="s">&quot;view&quot;</span><span class="o">,</span> <span class="s">&quot;view&quot;</span><span class="o">)</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="n">itemToItemRecs</span> <span class="k">=</span> <span class="n">itemToItem</span><span class="o">(</span><span class="n">trainSessions</span><span class="o">,</span> <span class="s">&quot;view&quot;</span><span class="o">,</span> <span class="s">&quot;view&quot;</span><span class="o">)</span>
 <span class="n">itemToItemRecs</span><span class="o">.</span><span class="n">toSeq</span><span class="o">.</span><span class="n">size</span>
 </pre></div>
 
@@ -12043,38 +12243,25 @@ defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">Rec<
 
 
 <div class="output_area">
-<div class="prompt output_prompt">Out[11]:</div>
+<div class="prompt output_prompt">Out[54]:</div>
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre><span class="ansi-cyan-fg">sessions</span>: <span class="ansi-green-fg">Seq</span>[<span class="ansi-green-fg">Seq</span>[<span class="ansi-green-fg">Event</span>]] = <span class="ansi-yellow-fg">ArrayBuffer</span>(
-  <span class="ansi-yellow-fg">Stream</span>(
-    <span class="ansi-yellow-fg">Event</span>(<span class="ansi-green-fg">1437856704939L</span>, <span class="ansi-green-fg">1253013</span>, <span class="ansi-green-fg">&#34;view&#34;</span>, <span class="ansi-green-fg">214357</span>, None),
-    <span class="ansi-yellow-fg">Event</span>(<span class="ansi-green-fg">1437856765656L</span>, <span class="ansi-green-fg">1253013</span>, <span class="ansi-green-fg">&#34;view&#34;</span>, <span class="ansi-green-fg">203772</span>, None),
-    <span class="ansi-yellow-fg">Event</span>(<span class="ansi-green-fg">1437857105399L</span>, <span class="ansi-green-fg">1253013</span>, <span class="ansi-green-fg">&#34;view&#34;</span>, <span class="ansi-green-fg">262407</span>, None)
-  ),
-  <span class="ansi-yellow-fg">Stream</span>(
-    <span class="ansi-yellow-fg">Event</span>(<span class="ansi-green-fg">1437857105399L</span>, <span class="ansi-green-fg">1253013</span>, <span class="ansi-green-fg">&#34;view&#34;</span>, <span class="ansi-green-fg">262407</span>, None),
-    <span class="ansi-yellow-fg">Event</span>(<span class="ansi-green-fg">1437857205669L</span>, <span class="ansi-green-fg">1253013</span>, <span class="ansi-green-fg">&#34;view&#34;</span>, <span class="ansi-green-fg">214357</span>, None),
-    <span class="ansi-yellow-fg">Event</span>(<span class="ansi-green-fg">1437857253731L</span>, <span class="ansi-green-fg">1253013</span>, <span class="ansi-green-fg">&#34;view&#34;</span>, <span class="ansi-green-fg">203772</span>, None)
-  ),
-  <span class="ansi-yellow-fg">Stream</span>(
-<span class="ansi-yellow-fg">...</span>
-<span class="ansi-cyan-fg">itemToItemRecs</span>: <span class="ansi-green-fg">Map</span>[<span class="ansi-green-fg">Int</span>, <span class="ansi-green-fg">Seq</span>[<span class="ansi-green-fg">Rec</span>]] = <span class="ansi-yellow-fg">Map</span>(
+<pre><span class="ansi-cyan-fg">itemToItemRecs</span>: <span class="ansi-green-fg">Map</span>[<span class="ansi-green-fg">Int</span>, <span class="ansi-green-fg">Seq</span>[<span class="ansi-green-fg">Rec</span>]] = <span class="ansi-yellow-fg">Map</span>(
   <span class="ansi-green-fg">109603</span> -&gt; <span class="ansi-yellow-fg">List</span>(
     <span class="ansi-yellow-fg">Rec</span>(<span class="ansi-green-fg">421284</span>, <span class="ansi-green-fg">0.42857143F</span>),
     <span class="ansi-yellow-fg">Rec</span>(<span class="ansi-green-fg">356981</span>, <span class="ansi-green-fg">0.2857143F</span>),
     <span class="ansi-yellow-fg">Rec</span>(<span class="ansi-green-fg">172699</span>, <span class="ansi-green-fg">0.2857143F</span>)
   ),
   <span class="ansi-green-fg">360487</span> -&gt; <span class="ansi-yellow-fg">List</span>(
-    <span class="ansi-yellow-fg">Rec</span>(<span class="ansi-green-fg">257040</span>, <span class="ansi-green-fg">0.0969163F</span>),
-    <span class="ansi-yellow-fg">Rec</span>(<span class="ansi-green-fg">309778</span>, <span class="ansi-green-fg">0.0969163F</span>),
-    <span class="ansi-yellow-fg">Rec</span>(<span class="ansi-green-fg">135900</span>, <span class="ansi-green-fg">0.07488987F</span>),
-    <span class="ansi-yellow-fg">Rec</span>(<span class="ansi-green-fg">354555</span>, <span class="ansi-green-fg">0.052863438F</span>),
-    <span class="ansi-yellow-fg">Rec</span>(<span class="ansi-green-fg">414410</span>, <span class="ansi-green-fg">0.04845815F</span>),
+    <span class="ansi-yellow-fg">Rec</span>(<span class="ansi-green-fg">257040</span>, <span class="ansi-green-fg">0.09565217F</span>),
+    <span class="ansi-yellow-fg">Rec</span>(<span class="ansi-green-fg">309778</span>, <span class="ansi-green-fg">0.09565217F</span>),
+    <span class="ansi-yellow-fg">Rec</span>(<span class="ansi-green-fg">135900</span>, <span class="ansi-green-fg">0.073913045F</span>),
+    <span class="ansi-yellow-fg">Rec</span>(<span class="ansi-green-fg">354555</span>, <span class="ansi-green-fg">0.052173913F</span>),
+    <span class="ansi-yellow-fg">Rec</span>(<span class="ansi-green-fg">414410</span>, <span class="ansi-green-fg">0.047826085F</span>),
 <span class="ansi-yellow-fg">...</span>
-<span class="ansi-cyan-fg">res10_2</span>: <span class="ansi-green-fg">Int</span> = <span class="ansi-green-fg">12078</span></pre>
+<span class="ansi-cyan-fg">res53_1</span>: <span class="ansi-green-fg">Int</span> = <span class="ansi-green-fg">12930</span></pre>
 </div>
 
 </div>
@@ -12082,14 +12269,28 @@ defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">Rec<
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Ok, we have train and test datasets, recommendations based on the first one. I'm going to eavluate them. My key metrics are Recall and Empty recommendations. Recall = get top n recommendation (top@n) for each click (view events) and count a hit if the next click (itemId) are in top@n recommandations. Empty recs = percent of empty recommendations for particular itemId in session.</p>
+
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="prompt input_prompt">In&nbsp;[55]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span></span><span class="k">def</span> <span class="n">evaluateNextView</span><span class="o">(</span><span class="n">sessions</span><span class="k">:</span> <span class="kt">Seq</span><span class="o">[</span><span class="kt">Seq</span><span class="o">[</span><span class="kt">Event</span><span class="o">]],</span><span class="n">recs</span><span class="k">:</span> <span class="kt">Map</span><span class="o">[</span><span class="kt">Int</span>, <span class="kt">Seq</span><span class="o">[</span><span class="kt">Rec</span><span class="o">]],</span> <span class="n">top</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">3</span><span class="o">)</span><span class="k">:</span> <span class="o">(</span><span class="kt">Int</span><span class="o">,</span> <span class="kt">Int</span><span class="o">,</span> <span class="nc">Int</span><span class="o">)</span> <span class="k">=</span> <span class="o">{</span>
-    <span class="c1">// (trues, empty recs, total comparisons)</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">case</span> <span class="k">class</span> <span class="nc">Evaluate</span><span class="o">(</span><span class="n">hits</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">emptyRecs</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">total</span><span class="k">:</span> <span class="kt">Int</span><span class="o">){</span>
+    <span class="k">def</span> <span class="o">+(</span><span class="n">that</span><span class="k">:</span> <span class="kt">Evaluate</span><span class="o">)</span><span class="k">:</span> <span class="kt">Evaluate</span> <span class="o">=</span> <span class="nc">Evaluate</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="n">hits</span> <span class="o">+</span> <span class="n">that</span><span class="o">.</span><span class="n">hits</span><span class="o">,</span> <span class="n">emptyRecs</span> <span class="o">+</span> <span class="n">that</span><span class="o">.</span><span class="n">emptyRecs</span><span class="o">,</span> <span class="n">total</span> <span class="o">+</span> <span class="n">that</span><span class="o">.</span><span class="n">total</span><span class="o">)</span>
+    <span class="k">override</span> <span class="k">def</span> <span class="n">toString</span> <span class="k">=</span> <span class="s">&quot;Recall: %f  Empty recs: %f&quot;</span><span class="o">.</span><span class="n">format</span><span class="o">(</span><span class="n">hits</span><span class="o">.</span><span class="n">toDouble</span> <span class="o">/</span> <span class="n">total</span><span class="o">.</span><span class="n">toDouble</span><span class="o">,</span> <span class="n">emptyRecs</span><span class="o">.</span><span class="n">toDouble</span> <span class="o">/</span> <span class="n">total</span><span class="o">.</span><span class="n">toDouble</span><span class="o">)</span>
+<span class="o">}</span>
+
+<span class="k">def</span> <span class="n">evaluateNextView</span><span class="o">(</span><span class="n">sessions</span><span class="k">:</span> <span class="kt">Seq</span><span class="o">[</span><span class="kt">Seq</span><span class="o">[</span><span class="kt">Event</span><span class="o">]],</span><span class="n">recs</span><span class="k">:</span> <span class="kt">Map</span><span class="o">[</span><span class="kt">Int</span>, <span class="kt">Seq</span><span class="o">[</span><span class="kt">Rec</span><span class="o">]],</span> <span class="n">top</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">3</span><span class="o">)</span><span class="k">:</span> <span class="kt">Evaluate</span> <span class="o">=</span> <span class="o">{</span>
     <span class="n">sessions</span><span class="o">.</span><span class="n">map</span><span class="o">(</span> <span class="k">_</span><span class="o">.</span><span class="n">filter</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">event</span> <span class="o">==</span> <span class="s">&quot;view&quot;</span><span class="o">))</span>
      <span class="o">.</span><span class="n">filter</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="o">)</span>
      <span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">itemId</span><span class="o">))</span>
@@ -12097,11 +12298,11 @@ defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">Rec<
      <span class="o">.</span><span class="n">map</span><span class="o">{</span> <span class="k">case</span> <span class="nc">Seq</span><span class="o">(</span><span class="n">currentItemId</span><span class="o">,</span> <span class="n">toPredictItemId</span><span class="o">)</span> <span class="k">=&gt;</span> 
             <span class="k">val</span> <span class="n">recsForCurrentItemId</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Seq</span><span class="o">[</span><span class="kt">Rec</span><span class="o">]]</span> <span class="k">=</span> <span class="n">recs</span><span class="o">.</span><span class="n">get</span><span class="o">(</span><span class="n">currentItemId</span><span class="o">).</span><span class="n">map</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">take</span><span class="o">(</span><span class="n">top</span><span class="o">)).</span><span class="n">map</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">filter</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">itemIdRight</span> <span class="o">==</span> <span class="n">toPredictItemId</span><span class="o">))</span>
          <span class="n">recsForCurrentItemId</span> <span class="k">match</span> <span class="o">{</span>
-             <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="nc">Seq</span><span class="o">(</span><span class="n">x</span><span class="o">))</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">1</span><span class="o">)</span> <span class="c1">// hit</span>
-             <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="nc">Seq</span><span class="o">())</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">1</span><span class="o">)</span> <span class="c1">//missed recs</span>
-             <span class="k">case</span> <span class="nc">None</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">1</span><span class="o">)</span> <span class="c1">//empty recs</span>
+             <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="nc">Seq</span><span class="o">(</span><span class="n">x</span><span class="o">))</span> <span class="k">=&gt;</span> <span class="nc">Evaluate</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">1</span><span class="o">)</span> <span class="c1">// hit</span>
+             <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="nc">Seq</span><span class="o">())</span> <span class="k">=&gt;</span> <span class="nc">Evaluate</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">1</span><span class="o">)</span> <span class="c1">//missed recs</span>
+             <span class="k">case</span> <span class="nc">None</span> <span class="k">=&gt;</span> <span class="nc">Evaluate</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">1</span><span class="o">)</span> <span class="c1">//empty recs</span>
          <span class="o">}}</span>
-    <span class="o">.</span><span class="n">reduce</span><span class="o">{</span> <span class="o">(</span><span class="n">left</span><span class="o">,</span> <span class="n">right</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">left</span><span class="o">.</span><span class="n">_1</span> <span class="o">+</span> <span class="n">right</span><span class="o">.</span><span class="n">_1</span><span class="o">,</span> <span class="n">left</span><span class="o">.</span><span class="n">_2</span> <span class="o">+</span> <span class="n">right</span><span class="o">.</span><span class="n">_2</span><span class="o">,</span> <span class="n">left</span><span class="o">.</span><span class="n">_3</span> <span class="o">+</span> <span class="n">right</span><span class="o">.</span><span class="n">_3</span><span class="o">)}</span>
+    <span class="o">.</span><span class="n">reduce</span><span class="o">(</span><span class="k">_</span><span class="o">+</span><span class="k">_</span><span class="o">)</span>
 <span class="o">}</span>
 </pre></div>
 
@@ -12114,12 +12315,13 @@ defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">Rec<
 
 
 <div class="output_area">
-<div class="prompt output_prompt">Out[15]:</div>
+<div class="prompt output_prompt">Out[55]:</div>
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>defined <span class="ansi-green-fg">function</span> <span class="ansi-cyan-fg">evaluateNextView</span></pre>
+<pre>defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">Evaluate</span>
+defined <span class="ansi-green-fg">function</span> <span class="ansi-cyan-fg">evaluateNextView</span></pre>
 </div>
 
 </div>
@@ -12130,10 +12332,11 @@ defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">Rec<
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="prompt input_prompt">In&nbsp;[56]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span></span><span class="n">evaluateNextView</span><span class="o">(</span><span class="n">sessions</span><span class="o">,</span><span class="n">itemToItemRecs</span> <span class="o">)</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="n">println</span><span class="o">(</span><span class="s">&quot;Evaluation for the train dataset &quot;</span> <span class="o">+</span> <span class="n">evaluateNextView</span><span class="o">(</span><span class="n">trainSessions</span><span class="o">,</span><span class="n">itemToItemRecs</span><span class="o">))</span>
+<span class="n">println</span><span class="o">(</span><span class="s">&quot;Evaluation for the test dataset &quot;</span> <span class="o">+</span> <span class="n">evaluateNextView</span><span class="o">(</span><span class="n">testSessions</span><span class="o">,</span><span class="n">itemToItemRecs</span><span class="o">))</span>
 </pre></div>
 
 </div>
@@ -12145,14 +12348,13 @@ defined <span class="ansi-green-fg">class</span> <span class="ansi-cyan-fg">Rec<
 
 
 <div class="output_area">
-<div class="prompt output_prompt">Out[14]:</div>
+<div class="prompt"></div>
 
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre><span class="ansi-cyan-fg">res13</span>: (<span class="ansi-green-fg">Int</span>, <span class="ansi-green-fg">Int</span>, <span class="ansi-green-fg">Int</span>) = (<span class="ansi-green-fg">121901</span>, <span class="ansi-green-fg">262223</span>, <span class="ansi-green-fg">615644</span>)</pre>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Evaluation for the train dataset Recall: 0.194188  Empty recs: 0.418063
+Evaluation for the test dataset Recall: 0.196900  Empty recs: 0.417510
+</pre>
 </div>
-
 </div>
 
 </div>
