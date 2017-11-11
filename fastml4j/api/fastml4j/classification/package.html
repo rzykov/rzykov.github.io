@@ -1,0 +1,155 @@
+<!DOCTYPE html >
+<html>
+        <head>
+          <title>classification - fastml4j.classification</title>
+          <meta name="description" content="classification - fastml4j.classification" />
+          <meta name="keywords" content="classification fastml4j.classification" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../lib/template.js"></script>
+      <script type="text/javascript" src="../../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../index.html';
+            var hash = 'fastml4j.classification.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img alt="Package" src="../../lib/package_big.png" />
+        <p id="owner"><a href="../package.html" class="extype" name="fastml4j">fastml4j</a></p>
+        <h1>classification</h1><span class="permalink">
+      <a href="../../index.html#fastml4j.classification.package" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">classification</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        
+        
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="fastml4j.classification.ClassificationModel" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="ClassificationModelextendsAnyRef"></a>
+      <a id="ClassificationModel:ClassificationModel"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="ClassificationModel.html"><span class="name">ClassificationModel</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#fastml4j.classification.package@ClassificationModelextendsAnyRef" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Abstract class for any classification model
+</p>
+    </li><li name="fastml4j.classification.LogisticRegression" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="LogisticRegressionextendsClassificationModelwithIntercept"></a>
+      <a id="LogisticRegression:LogisticRegression"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="LogisticRegression.html"><span class="name">LogisticRegression</span></a><span class="result"> extends <a href="ClassificationModel.html" class="extype" name="fastml4j.classification.ClassificationModel">ClassificationModel</a> with <a href="../util/Intercept.html" class="extype" name="fastml4j.util.Intercept">Intercept</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#fastml4j.classification.package@LogisticRegressionextendsClassificationModelwithIntercept" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Logistic regression.</p><div class="fullcomment"><div class="comment cmt"><p>Logistic regression. Creates a class of the logistic regression model
+</p></div></div>
+    </li><li name="fastml4j.classification.SVM" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="SVMextendsClassificationModelwithIntercept"></a>
+      <a id="SVM:SVM"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="SVM.html"><span class="name">SVM</span></a><span class="result"> extends <a href="ClassificationModel.html" class="extype" name="fastml4j.classification.ClassificationModel">ClassificationModel</a> with <a href="../util/Intercept.html" class="extype" name="fastml4j.util.Intercept">Intercept</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#fastml4j.classification.package@SVMextendsClassificationModelwithIntercept" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">SVM linear based on hinge loss.</p><div class="fullcomment"><div class="comment cmt"><p>SVM linear based on hinge loss. Creates a class of the SVM model
+</p></div></div>
+    </li></ol>
+            </div>
+
+        
+
+        
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+
+
+    </body>
+      </html>
